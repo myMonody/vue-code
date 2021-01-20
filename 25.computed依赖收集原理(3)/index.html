@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <!-- <div id="app">hello
+      <div id="my">hello {{name}}<span>world</span></div>
+    </div> -->
+    <!-- <div id="app" style="color: red">hello {{name}} <span>hello</span>
+     <div>
+        <ul>
+          <li style="color:blue">
+            {{school.name}}---{{school.age}}
+            {{school.name}}---{{school.age}}
+          </li>
+        </ul>
+     </div> -->
+     <!-- <div>
+        {{arr}}
+     </div> -->
+     <div id="app">
+       <span>哈哈</span>
+      <p>{{fullName}}</p>
+     </div>
+    </div>
+    <script src="dist/umd/vue.js"></script>
+
+    <script>
+      let vm = new Vue({
+        el:'#app',
+        data() {
+          return {
+            name:'zhufeng',
+            firstName:'张三',
+            lastName:'李四'
+          }
+        },
+        computed: {
+          //计算属性--会根据依赖的数据，重新执行
+          // 内部也是用了defineProperty，内部有一个变量dirty来控制要不要执行。
+          // computed还是一个 watcher，内部依赖的属性会收集这个watcher
+          // (例如：firstName会收集这个watcher, lastName也会收集这个watcher)
+          fullName() {
+            console.log('---会执行吗')
+            return this.firstName + this.lastName;
+          }
+          // 第二种写法
+          // fullName: {
+          //   get() { // defineProperty中的get方法。
+
+          //   },
+          //   set() { // defineProperty中的set方法
+
+          //   }
+          // }
+        }
+      })
+      /*
+      vm.fullName;
+      vm.fullName;// 这里只执行一次
+      */
+      // setTimeout(() => {
+      //   // vm.name = 'jw';
+      //   vm.firstName = 100;
+      //   vm.fullName; // !!!!computed只有依赖值改了之后，重新去取的时候才会执行。
+      //   // 取值---就是一个get()
+      // },1000)
+      /*
+
+
+      console.log(vm.fullName);
+      console.log(vm.fullName);
+      console.log(vm.fullName);
+      vm.firstName = 'li'; // 改了依赖，重新去调用计算属性 get的时候才会执行
+      console.log(vm.fullName);
+
+      */
+     // firstName lastName应该也将依赖收集起来.
+     vm.firstName = '李';
+
+
+      // 这个时候哈哈标签不变，变化的只是name这个vnode;
+      // setTimeout(() => {
+      //   vm.name = 'jw';
+      // },1000)
+    </script>
+    
+
+    <!-- <script>
+      // console.log(Vue);
+      // options写法。
+
+   
+      let vm = new Vue({
+        el: "#app", // 这里等价于 vm.$mount('#app');
+        data() {
+          //   console.log(this);
+          return {
+            // a: [1, 2, 3],
+            name: "lisi",
+            a:1,
+            arr: [{a:1},2,3], // 数组不会进relative方法，而是arr这个属性进了
+            school: { name: "lisi", age: 18 },
+          };
+          // return {a: {a: {a: 1}}} 默认弄一个数据会递归去用defineProperty进行拦截。性能差--vue使用proxy拦截
+          // vm._data.a = {b:1}
+        },
+        // 生命周期就是回调函数 先订阅好 后续会触发此方法。
+        created() {
+          // console.log('my created22222');
+        },
+        // template: "",
+        // watch: {},
+        // computed: {},
+        // render(h) {
+        //   // createElement
+        //   return h("div", { id: "a" }, "hello");
+        // },
+      });
+
+
+      // !!!!!!此时数据并没有在模板中使用，而是在代码中使用。
+      // !!!!!!! js中直接取值是没有watcher的。
+      // console.log(vm.a); // 这里也会走get方法，但是Dep.target没有值， Dep.target此时已经销毁了，打印undefine
+      // console.log('---',vm.data)
+      // vue的更新策略是以组件为单位，给每一个组件都增加一个watcher
+      // 属性变化后，重新调用这个watcher--渲染watcher
+      setTimeout(() => {
+        vm.school.name = 'zs';
+        // vm._update(vm._render());
+      },1000)
+      // 15.数组改索引的问题。更新数组索引，更新数组长度是无效的。
+      setTimeout(()=> {
+        // 多次调用的时候---批处理函数。
+        // vue异步更新，更新数据后不能立即拿到最新的节点。
+        // nextTick 等待异步更新之后再获取最终的dom。
+        vm.arr.push(100);
+        vm.arr.push(100);
+        vm.arr.push(100);
+        vm.arr.push(100);
+        // 用户调用这个方法的时候
+        console.log('更新前',vm.$el.innerHTML);
+        vm.$nextTick(() => {
+          console.log('更新后',vm.$el.innerHTML);
+        })
+      },1000)
+      /* 15.
+      1,取arr的值，会调用get方法，我希望让当前数组记住这个渲染watcher
+      2，我给所有对象的类型增加一个dep
+      3,当页面对数组的arr取值的时候，我就让数组的dep记住这个watcher depend方法(把数组放在watcher,watcher放到dep里)
+      4,ob.dep.notify()通知更新
+
+      // 等会我更新数组的时候，push shift等方法时，找到数组对应的watcher来更新
+      */
+
+      vm.school.a // !!!!!!代码中取值，执行了get，并同时执行了 popTarget(this);清空了watcher.
+
+
+
+      // Vue.mixin({
+      //   created() {
+      //     function b(){
+
+      //     }
+      //     console.log('111111---created')
+      //   },
+      // })
+      // Vue.mixin({
+      //   created() {
+      //     function a() {
+
+      //     }
+      //     function b() {
+
+      //     }
+      //     console.log('my created');
+      //   }
+      // }); // 混合 混入。
+
+
+      // console.log(vm.$options);// 这里能打印出来，因为在init方法中，给this实例设置了属性$option= 传入的参数options
+      // console.log(vm._data);
+      // 如果给数据动态赋值。
+      // vm._data.a = {
+      //   b:1
+      // }
+      /*
+
+      ！！！开发中很少对数组索引进行操作。为了性能考虑不对数组进行拦截。
+      拦截可以改变数组的方法进行操作
+      */
+      // a[100] = 2;
+      // console.log(vm._data.a[0]);
+      // console.log(vm._data.a.push(234),vm._data)
+
+      // vm._data.arr[0].a = 100; // 2，监控这种情况的数据改变的时候。
+
+      // console.log(vm._data);
+
+      // 第三种情况--往数组的对象里面再push数据
+      // vm._data.arr.push({b:1});
+      // vm_data.arr[1].b;
+
+      // vm.arr = 100;
+
+      /*
+       渲染的操作------渲染逻辑！！！！！！
+       1）默认会先找render 方法。
+       2) 默认没有传render方法的时候会查找template
+       3) 找当前el指定的元素中的内容来进行渲染。
+
+       ast 解析template ===》 render函数。
+
+       */
+    </script> -->
+
+
+  </body>
+</html>

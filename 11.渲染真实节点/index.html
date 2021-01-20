@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <!-- <div id="app">hello
+      <div id="my">hello {{name}}<span>world</span></div>
+    </div> -->
+    <div id="app" style="color: red">hello {{name}} <span>hello</span>
+     <div>
+        <ul>
+          <li>
+            {{school.name}}---{{school.age}}
+          </li>
+        </ul>
+     </div>
+    </div>
+    <script src="dist/umd/vue.js"></script>
+    <script>
+      // console.log(Vue);
+      // options写法。
+      let vm = new Vue({
+        el: "#app", // 这里等价于 vm.$mount('#app');
+        data() {
+          //   console.log(this);
+          return {
+            // a: [1, 2, 3],
+            name: "lisi",
+            // arr: [{ a: 1 }],
+            school: { name: "zs", age: 18 },
+          };
+          // return {a: {a: {a: 1}}} 默认弄一个数据会递归去用defineProperty进行拦截。性能差--vue使用proxy拦截
+          // vm._data.a = {b:1}
+        },
+        // template: "",
+        // watch: {},
+        // computed: {},
+        // render(h) {
+        //   // createElement
+        //   return h("div", { id: "a" }, "hello");
+        // },
+      });
+      // console.log(vm.$options);// 这里能打印出来，因为在init方法中，给this实例设置了属性$option= 传入的参数options
+      // console.log(vm._data);
+      // 如果给数据动态赋值。
+      // vm._data.a = {
+      //   b:1
+      // }
+      /*
+
+      ！！！开发中很少对数组索引进行操作。为了性能考虑不对数组进行拦截。
+      拦截可以改变数组的方法进行操作
+      */
+      // a[100] = 2;
+      // console.log(vm._data.a[0]);
+      // console.log(vm._data.a.push(234),vm._data)
+
+      // vm._data.arr[0].a = 100; // 2，监控这种情况的数据改变的时候。
+
+      // console.log(vm._data);
+
+      // 第三种情况--往数组的对象里面再push数据
+      // vm._data.arr.push({b:1});
+      // vm_data.arr[1].b;
+
+      // vm.arr = 100;
+
+      /*
+       渲染的操作------渲染逻辑！！！！！！
+       1）默认会先找render 方法。
+       2) 默认没有传render方法的时候会查找template
+       3) 找当前el指定的元素中的内容来进行渲染。
+
+       ast 解析template ===》 render函数。
+
+       */
+    </script>
+  </body>
+</html>

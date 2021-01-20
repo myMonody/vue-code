@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <script src="dist/umd/vue.js"></script>
+    <script>
+      // console.log(Vue);
+      // options写法。
+      let vm = new Vue({
+        el: "#app",
+        data() {
+         //   console.log(this);
+          return {
+            a: 1
+          };
+        },
+        template: "",
+        watch: {},
+        computed: {},
+      });
+      // console.log(vm.$options);// 这里能打印出来，因为在init方法中，给this实例设置了属性$option= 传入的参数options
+
+    </script>
+  </body>
+</html>

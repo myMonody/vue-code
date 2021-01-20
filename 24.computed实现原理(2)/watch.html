@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="app">hello {{a}}</div>
+    <script src="dist/umd/vue.js"></script>
+    <!-- <script src="node_modules/vue/dist/vue.js"></script> -->
+    <script>
+      let vm = new Vue({
+        el: "#app",
+        data() {
+          return {
+            a:{
+               a:{
+                  a:1
+               }
+            }
+          };
+        },
+        watch: {
+          /*
+1，直接写key value
+2,写成key 和数组的方式。
+3,监控当前实例上的方法。
+           */
+          // 1，直接写key value
+          //  'a'(newVal,oldVal) { // 对象没有老值，都是新值
+          //    console.log(newVal);
+          //  }
+          // 2,写成key 和数组的方式。
+          //  a: [(newVal, oldVla) => {}, (newVal, oldVla) => {}],
+         //  a: "sub",
+          'a.a.a': {
+             handler(newValue,oldValue) {
+                console.log(newValue,oldValue);
+             },
+            //  immediate:true, options的选项
+            //  async: true 
+          }
+        },
+        methods: {
+          sub(newVal,oldVal) {
+             console.log(newVal,oldVal)
+          },
+        },
+      });
+      vm.a.a.a = 100;
+      vm.a.a.a = 2000;
+      // console.log(vm.a);
+    </script>
+  </body>
+</html>
